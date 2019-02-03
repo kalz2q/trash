@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/js/three_js/190101_ikeda_done/</a> (p001.html)</li>
+      <script>up='index.html'</script>
+      <li><a href="p000_template.html.html">prev: p000_template.html</a></li>
+      <script>prev='p000_template.html.html'</script>
+      <li>(no next)</li>
+    </ul>
+    <div class="pre">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+window.addEventListener(&#x27;DOMContentLoaded&#x27;, init);
+function init() {
+  const width = 960;
+  const height = 540;
+  
+  const renderer = new THREE.WebGLRenderer({
+    canvas: document.querySelector(&#x27;#myCanvas&#x27;)
+  });
+  //スマートフォンでもぼやけず綺麗に表示する。
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(width, height);
+  
+  //シーンを作る。シーンにオブジェクトや光源を置いていく。
+  const scene = new THREE.Scene();
+  
+  //カメラを作る。
+  const camera = new THREE.PerspectiveCamera(45, width / height, 1, 100000);
+  camera.position.set(0, 0, 1000);
+  
+  const geometry = new THREE.BoxGeometry(500, 500, 500);
+  const material = new THREE.MeshStandardMaterial({color: 0x0000FF});
+  const box = new THREE.Mesh(geometry, material);//形状と素材からメッシュを作る。
+  scene.add(box);//メッシュをシーンに追加する。
+  
+  //ライトを作る。
+  const light = new THREE.DirectionalLight(0xFFFFFF);//平行光源
+  light.intensity = 2;
+  light.position.set(1, 1, 1);//斜めの位置にライトを置く。
+  scene.add(light);
+  tick();
+  
+  function tick() {//アニメーション表示するためのコールバック関数。
+    window.requestAnimationFrame(tick);
+    
+    box.rotation.x += 0.01;
+    box.rotation.y += 0.01;
+    
+    renderer.render(scene, camera);
+  }
+}
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;canvas id=&quot;myCanvas&quot;&gt;&lt;/canvas&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</div>
+  </body>
+</html>

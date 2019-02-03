@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p024_scope.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p023_fn.c.html">prev: p023_fn.c</a></li>
+      <script>prev='p023_fn.c.html'</script>
+      <li><a href="p030_math.c.html">next: p030_math.c</a></li>
+      <script>next='p030_math.c.html'</script>
+    </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+
+int g;//global
+
+void f(int a) {
+  int b;
+
+  a += 2;
+  g += 2;
+  printf(&quot;in f() : a = %d\n&quot;, a);
+  printf(&quot;in f() : g = %d\n&quot;, g);
+}
+
+int main() {
+  int a = 10;
+
+  g = 100;
+  printf(&quot;in main() : a = %d\n&quot;, a);
+  printf(&quot;in main() : g = %d\n&quot;, g);
+  f(a);// pass by value
+  printf(&quot;in main() : a = %d\n&quot;, a);
+  printf(&quot;in main() : g = %d\n&quot;, g);
+}
+</div>
+  </body>
+</html>

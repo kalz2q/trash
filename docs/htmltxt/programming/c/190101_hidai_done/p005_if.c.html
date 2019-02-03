@@ -31,11 +31,27 @@ window.document.onkeydown = function(e) {
     </script>
   </head>
   <body>
-    <h1>/</h1>
     <ul>
-      <li><a href="programming/index.html">programming/&nbsp;&nbsp;(6,912)</a></li>
-      <li><a href="000000_readme.html">000000_readme&nbsp;&nbsp;(13)</a></li>
-      <li><a href="190127_htmltxt.py.html">190127_htmltxt.py&nbsp;&nbsp;(5,519)</a></li>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p005_if.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p004_keyboard.c.html">prev: p004_keyboard.c</a></li>
+      <script>prev='p004_keyboard.c.html'</script>
+      <li><a href="p006_switch.c.html">next: p006_switch.c</a></li>
+      <script>next='p006_switch.c.html'</script>
     </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+
+int main(void) {
+  int old;
+
+  printf(&quot;あなたの年齢は？ &gt;&quot;);
+  scanf(&quot;%d&quot;, &amp;old);
+  if (old &lt; 20) {
+    printf(&quot;あなたは未だ違法である。\n&quot;);
+  } else {
+    printf(&quot;今度一緒に飲みましょう。\n&quot;);
+  }
+}
+</div>
   </body>
 </html>

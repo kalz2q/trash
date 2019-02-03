@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p006_switch.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p005_if.c.html">prev: p005_if.c</a></li>
+      <script>prev='p005_if.c.html'</script>
+      <li><a href="p007_for.c.html">next: p007_for.c</a></li>
+      <script>next='p007_for.c.html'</script>
+    </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+
+int main(void) {
+  char neta;
+
+  printf(&quot;いらっしゃい！　何にしましょうか？\n&quot;);
+  printf(&quot;a: とろ, b: 赤身, c: ホタテ, d: げそ &gt;&quot;);
+  scanf(&quot;%c&quot;, &amp;neta);
+
+  switch (neta){
+  case &#x27;a&#x27;:
+    printf(&quot;へい！　とろいっちょ！\n&quot;);
+    break;
+  case &#x27;b&#x27;:
+    printf(&quot;はいよー！　赤身おまちどうさま。\n&quot;);
+    break;
+  case &#x27;c&#x27;:
+    printf(&quot;ごめんねー、ホタテきらしてるんだ。\n&quot;);
+    break;
+  case &#x27;d&#x27;:
+    printf(&quot;げそなんて、お客さんめずらしいねー。\n&quot;);
+    break;
+  default:
+    printf(&quot;冷やかしなら帰ってもらうよー！\n&quot;);
+    break;
+  }
+}
+</div>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p004_keyboard.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p003_add.c.html">prev: p003_add.c</a></li>
+      <script>prev='p003_add.c.html'</script>
+      <li><a href="p005_if.c.html">next: p005_if.c</a></li>
+      <script>next='p005_if.c.html'</script>
+    </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+
+int main(void) {
+  int old;
+  float weight;
+
+  printf(&quot;あなたは何歳ですか？ &gt;&quot;);
+  scanf(&quot;%d&quot;, &amp;old);
+  printf(&quot;すると、10年後は%d歳ですね。\n&quot;, old + 10);
+
+  printf(&quot;あなたの体重は何キロ？ &gt;&quot;);
+  scanf(&quot;%f&quot;, &amp;weight);
+  printf(&quot;ふーん、そうなんだ。\n&quot;);
+}
+</div>
+  </body>
+</html>

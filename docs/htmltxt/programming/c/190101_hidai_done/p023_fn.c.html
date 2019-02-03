@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p023_fn.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p022_multi.c.html">prev: p022_multi.c</a></li>
+      <script>prev='p022_multi.c.html'</script>
+      <li><a href="p024_scope.c.html">next: p024_scope.c</a></li>
+      <script>next='p024_scope.c.html'</script>
+    </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+
+int plus(int a, int b) {//関数を定義する。
+  return a + b;
+}
+
+void func() {
+  printf(&quot;関数func()の中です。\n&quot;);
+}
+
+int main() {
+  int a, b, c;
+
+  a = 5;
+  b = 2;
+  c = plus(5, 2);//定義した関数を用いる。
+  printf(&quot;5 + 2 = %d\n&quot;, c);
+  printf(&quot;5 + 2 = %d\n&quot;, plus(a, b));
+  func();
+}
+</div>
+  </body>
+</html>

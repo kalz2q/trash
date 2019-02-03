@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p022_multi.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p021_init.c.html">prev: p021_init.c</a></li>
+      <script>prev='p021_init.c.html'</script>
+      <li><a href="p023_fn.c.html">next: p023_fn.c</a></li>
+      <script>next='p023_fn.c.html'</script>
+    </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+#define MAX1 10
+#define MAX2 10
+
+int main(void) {
+  int i;
+  int j;
+  int kuku[MAX1][MAX2];//2次元配列
+
+  for (i = 0; i &lt; MAX1; i++) {
+    for (j = 0; j &lt; MAX2; j++) {
+      kuku[i][j] = (i + 1) * (j + 1);
+    }
+  }
+
+  for (i = 0; i &lt; MAX1; i++) {
+    for (j = 0; j &lt; MAX2; j++) {
+      printf(&quot;%3d, &quot;, kuku[i][j]);
+    }
+    printf(&quot;\n&quot;);
+  }
+}
+</div>
+  </body>
+</html>

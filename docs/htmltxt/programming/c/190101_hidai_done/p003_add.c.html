@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p003_add.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p002_size.c.html">prev: p002_size.c</a></li>
+      <script>prev='p002_size.c.html'</script>
+      <li><a href="p004_keyboard.c.html">next: p004_keyboard.c</a></li>
+      <script>next='p004_keyboard.c.html'</script>
+    </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+
+int main(void) {
+  double radius = 10;   //半径
+  double pi = 3.1415926;//π
+  double circumference; //円周
+  double area;          //面積
+
+  circumference = radius * 2 * pi;
+  area = radius * radius * pi;
+
+  printf(&quot;半径 = %f\n&quot;, radius);
+  printf(&quot;円周 = %f\n&quot;, circumference);
+  printf(&quot;面積 = %f\n&quot;, area);
+  printf(&quot;\n&quot;);
+  printf(&quot;半径 = %f\n&quot;, radius = 20);
+  printf(&quot;円周 = %f\n&quot;, radius * 2 * pi);
+  printf(&quot;面積 = %f\n&quot;, radius * radius * pi);
+}
+</div>
+  </body>
+</html>

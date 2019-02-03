@@ -31,11 +31,24 @@ window.document.onkeydown = function(e) {
     </script>
   </head>
   <body>
-    <h1>/</h1>
     <ul>
-      <li><a href="programming/index.html">programming/&nbsp;&nbsp;(6,912)</a></li>
-      <li><a href="000000_readme.html">000000_readme&nbsp;&nbsp;(13)</a></li>
-      <li><a href="190127_htmltxt.py.html">190127_htmltxt.py&nbsp;&nbsp;(5,519)</a></li>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p030_math.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p024_scope.c.html">prev: p024_scope.c</a></li>
+      <script>prev='p024_scope.c.html'</script>
+      <li><a href="p031_random.c.html">next: p031_random.c</a></li>
+      <script>next='p031_random.c.html'</script>
     </ul>
+    <div class="pre">// gcc example.c -lm
+#include &lt;math.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+  double rad;//radian
+  for (rad = 0; rad &lt; 3.1; rad += 0.1) {
+    printf(&quot;sin(%3.1f) = %010.8f\n&quot;, rad, sin(rad));
+  }
+}
+</div>
   </body>
 </html>

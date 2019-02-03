@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p020_array.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p009_do.c.html">prev: p009_do.c</a></li>
+      <script>prev='p009_do.c.html'</script>
+      <li><a href="p021_init.c.html">next: p021_init.c</a></li>
+      <script>next='p021_init.c.html'</script>
+    </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+#define MAX 5
+
+int main(void) {
+  int i;
+  int point[MAX];
+  int total = 0;
+  int avr;  // average
+
+  for (i = 0; i &lt; MAX; i++) {//各生徒の得点をキーボードから得る。
+    printf(&quot;%d人目の点数は？ &gt;&quot;, i + 1);
+    scanf(&quot;%d&quot;, &amp;point[i]);
+  }
+  for (i = 0; i &lt; MAX; i++) {
+    printf(&quot;%d人目 = %d\n&quot;, i + 1, point[i]);//生徒i+1の得点を出力する。
+    total += point[i];                       //総和を求める。
+  }
+  avr = total / MAX;//端数を切り捨てる。
+  printf(&quot;平均点 = %d\n&quot;, avr);
+}
+</div>
+  </body>
+</html>

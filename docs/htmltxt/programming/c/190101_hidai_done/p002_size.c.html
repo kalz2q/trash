@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p002_size.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p001_variable.c.html">prev: p001_variable.c</a></li>
+      <script>prev='p001_variable.c.html'</script>
+      <li><a href="p003_add.c.html">next: p003_add.c</a></li>
+      <script>next='p003_add.c.html'</script>
+    </ul>
+    <div class="pre">#include &lt;limits.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+  printf(&quot;sizeof(char  ): %ld\n&quot;, sizeof(char));
+  printf(&quot;sizeof(int   ): %ld\n&quot;, sizeof(int));
+  printf(&quot;sizeof(long  ): %ld\n&quot;, sizeof(long));
+  printf(&quot;sizeof(float ): %ld\n&quot;, sizeof(float));
+  printf(&quot;sizeof(double): %ld\n&quot;, sizeof(double));
+  printf(&quot;CHAR_MIN: %d\n&quot;,  CHAR_MIN);
+  printf(&quot;CHAR_MAX: %d\n&quot;,  CHAR_MAX);
+  printf(&quot;INT_MIN : %d\n&quot;,  INT_MIN);
+  printf(&quot;INT_MAX : %d\n&quot;,  INT_MAX);
+  printf(&quot;LONG_MIN: %ld\n&quot;, LONG_MIN);
+  printf(&quot;LONG_MAX: %ld\n&quot;, LONG_MAX);
+}
+</div>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p000_hello.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="000000_readme.txt.html">prev: 000000_readme.txt</a></li>
+      <script>prev='000000_readme.txt.html'</script>
+      <li><a href="p001_variable.c.html">next: p001_variable.c</a></li>
+      <script>next='p001_variable.c.html'</script>
+    </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+
+int main(void) {
+  printf(&quot;hello, world\n&quot;);
+  //C99以降では行コメントが使える。
+  // https://stackoverflow.com/questions/8284940/single-line-comments-in-ansi-c
+  //C99以降ではreturn 0;を省略できる。
+  // https://stackoverflow.com/questions/13545291/can-i-omit-return-from-main-in-c
+}
+</div>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/js/three_js/190101_ikeda_done/</a> (p000_template.html)</li>
+      <script>up='index.html'</script>
+      <li><a href="000000_readme.txt.html">prev: 000000_readme.txt</a></li>
+      <script>prev='000000_readme.txt.html'</script>
+      <li><a href="p001.html.html">next: p001.html</a></li>
+      <script>next='p001.html.html'</script>
+    </ul>
+    <div class="pre">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+window.addEventListener(&#x27;DOMContentLoaded&#x27;, init);
+function init() {
+  alert(&quot;hello, world&quot;);
+}
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;canvas id=&quot;myCanvas&quot;&gt;&lt;/canvas&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</div>
+  </body>
+</html>

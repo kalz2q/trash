@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p021_init.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p020_array.c.html">prev: p020_array.c</a></li>
+      <script>prev='p020_array.c.html'</script>
+      <li><a href="p022_multi.c.html">next: p022_multi.c</a></li>
+      <script>next='p022_multi.c.html'</script>
+    </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+#define MONTHS 12
+
+int main(void) {
+  int day[MONTHS + 1] = {0,  31, 28, 31,
+                         30, 31, 30, 31,
+                         30, 31, 30, 31};
+  int input;
+
+  printf(&quot;今日は何月ですか？　&gt;&quot;);
+  scanf(&quot;%d&quot;, &amp;input);
+  printf(&quot;すると今月は%d日までだから、&quot;, day[input]);
+  if (day[input] == 31) {
+    // 「株式会社ダイクマは、神奈川県を中心にディスカウントストアを展開
+    // していた企業。2013年6月1日に株式会社ヤマダ電機に吸収合併された。」
+    printf(&quot;月末にはダイクマへ行きましょう\n&quot;);
+  } else {
+    printf(&quot;サーティーワンの日はないのですね\n&quot;);
+  }
+}
+</div>
+  </body>
+</html>

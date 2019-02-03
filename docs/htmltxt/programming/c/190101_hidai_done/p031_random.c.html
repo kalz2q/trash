@@ -31,11 +31,26 @@ window.document.onkeydown = function(e) {
     </script>
   </head>
   <body>
-    <h1>/</h1>
     <ul>
-      <li><a href="programming/index.html">programming/&nbsp;&nbsp;(6,912)</a></li>
-      <li><a href="000000_readme.html">000000_readme&nbsp;&nbsp;(13)</a></li>
-      <li><a href="190127_htmltxt.py.html">190127_htmltxt.py&nbsp;&nbsp;(5,519)</a></li>
+      <li><a href="index.html">/programming/c/190101_hidai_done/</a> (p031_random.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="p030_math.c.html">prev: p030_math.c</a></li>
+      <script>prev='p030_math.c.html'</script>
+      <li>(no next)</li>
     </ul>
+    <div class="pre">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;time.h&gt;
+
+int main(void) {
+  int i;
+
+  srand((unsigned)time(NULL));
+  printf(&quot;rand() は、%dから%dの値を返す関数\n&quot;, 0, RAND_MAX);
+  for (i = 0; i &lt; 10; i++) {
+    printf(&quot;%d\n&quot;, rand() % 100);
+  }
+}
+</div>
   </body>
 </html>
