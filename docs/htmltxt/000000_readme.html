@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/</a> (000000_readme)</li>
+      <script>up='index.html'</script>
+      <li>(no prev)</li>
+      <li><a href="190127_htmltxt.py.html">next: 190127_htmltxt.py</a></li>
+      <script>next='190127_htmltxt.py.html'</script>
+    </ul>
+    <div class="pre">hello, world
+</div>
+  </body>
+</html>

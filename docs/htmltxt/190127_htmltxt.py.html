@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/</a> (190127_htmltxt.py)</li>
+      <script>up='index.html'</script>
+      <li><a href="000000_readme.html">prev: 000000_readme</a></li>
+      <script>prev='000000_readme.html'</script>
+      <li>(no next)</li>
+    </ul>
+    <div class="pre">import html
+import os
+import re
+import sys
+import time
+
+header = &quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;style&gt;
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    &lt;/style&gt;
+    &lt;script&gt;
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == &#x27;Backspace&#x27;)
+        history.back();
+    if (e.key == &#x27;i&#x27;)
+        if (up)
+            window.location.href = up;
+    if (e.key == &#x27;ArrowLeft&#x27;)
+        if (prev)
+            window.location.href = prev;
+    if (e.key == &#x27;ArrowRight&#x27;)
+        if (next)
+            window.location.href = next;
+};
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+&quot;&quot;&quot;
+
+footer = &quot;&quot;&quot;  &lt;/body&gt;
+&lt;/html&gt;
+&quot;&quot;&quot;
+
+def encode(s):
+    &quot;&quot;&quot;Returns a string which is html encoded from the string s.&quot;&quot;&quot;
+    s = html.escape(s)
+    # s = re.sub(r&quot;\n&quot;, &quot;&lt;br&gt;\n&quot;, s)
+    # s = re.sub(r&quot; &quot;, &quot;&amp;nbsp;&quot;, s)
+    return s
+
+def get_lens(root_src):
+    &quot;&quot;&quot;Returns a dictionary from a file path to the number of characters in the file.&quot;&quot;&quot;
+    lens = {}
+    for dirpath, dirnames, filenames in os.walk(root_src, topdown=False):
+        total = 0
+        for filename in filenames:
+            file_src = os.path.join(dirpath, filename)
+            with open(file_src, &quot;r&quot;) as f:
+                l = len(f.read())
+            lens[file_src] = l
+            total += l
+        for dirname in dirnames:
+            dir_src = os.path.join(dirpath, dirname)
+            total += lens[dir_src]
+        lens[dirpath] = total
+    return lens
+
+def main():
+    n_args = len(sys.argv) - 1
+    if n_args != 2:
+        # print(&quot;Number of arguments should be 2. Using default.&quot;)
+        root_src = &quot;.&quot;
+        root_dst = &quot;../htmltxt&quot;
+    else:
+        root_src = html.escape(os.path.abspath(sys.argv[1]))
+        root_dst = html.escape(os.path.abspath(sys.argv[2]))
+
+    if not os.path.exists(root_src):
+        print(&quot;Path&quot;, root_src, &quot;does not exist. Terminating.&quot;)
+        return
+    if not os.path.isdir(root_src):
+        print(&quot;Source is not directory. Terminating.&quot;)
+        return
+    print(&quot;Number of files:&quot;,
+          sum([len(xs) for _, _, xs in os.walk(root_src)]))
+
+    if os.path.exists(root_dst):  # Creates a backup.
+        s_time = str(int(time.time()))
+        os.rename(root_dst, root_dst + &quot;_bak&quot; + s_time)
+    os.mkdir(root_dst)
+
+    for dirpath, dirnames, filenames in os.walk(root_src):  # For each directory in the tree.
+        dirnames = list(map(html.escape, dirnames))
+        filenames = list(map(html.escape, filenames))
+        dirnames.sort()
+        filenames.sort()
+        heading = dirpath + &quot;/&quot;
+        heading = re.sub(&quot;^&quot; + root_src, &quot;&quot;, heading)
+
+        for dirname in dirnames:  # Makes directories.
+            dir_src = os.path.join(dirpath, dirname)
+            dir_dst = dir_src
+            dir_dst = re.sub(r&quot;^&quot; + root_src, root_dst, dir_dst)
+            os.mkdir(dir_dst)
+
+        for i in range(len(filenames)):  # Creates each articles.
+            prev, next = False, False
+            filename = filenames[i]
+            if i &gt;= 1:
+                prev = filenames[i - 1]
+            if i &lt; len(filenames) - 1:
+                next = filenames[i + 1]
+            file_src = os.path.join(dirpath, filename)
+            file_dst = file_src
+            file_dst = re.sub(r&quot;^&quot; + root_src, root_dst, file_dst)
+            file_dst += &quot;.html&quot;
+
+            s_links = &quot;    &lt;ul&gt;\n&quot;
+            s_links += &#x27;      &lt;li&gt;&lt;a href=&quot;index.html&quot;&gt;&#x27; + heading + &#x27;&lt;/a&gt; (&#x27; + filename + &#x27;)&lt;/li&gt;\n&#x27;
+            s_links += &quot;      &lt;script&gt;up=&#x27;index.html&#x27;&lt;/script&gt;\n&quot;
+            if prev:
+                s_links += &#x27;      &lt;li&gt;&lt;a href=&quot;&#x27; + prev + &#x27;.html&quot;&gt;prev: &#x27; + prev + &#x27;&lt;/a&gt;&lt;/li&gt;\n&#x27;
+                s_links += &quot;      &lt;script&gt;prev=&#x27;&quot; + prev + &quot;.html&#x27;&lt;/script&gt;\n&quot;
+            else:
+                s_links += &#x27;      &lt;li&gt;(no prev)&lt;/li&gt;\n&#x27;
+            if next:
+                s_links += &#x27;      &lt;li&gt;&lt;a href=&quot;&#x27; + next + &#x27;.html&quot;&gt;next: &#x27; + next + &#x27;&lt;/a&gt;&lt;/li&gt;\n&#x27;
+                s_links += &quot;      &lt;script&gt;next=&#x27;&quot; + next + &quot;.html&#x27;&lt;/script&gt;\n&quot;
+            else:
+                s_links += &#x27;      &lt;li&gt;(no next)&lt;/li&gt;\n&#x27;
+            s_links += &quot;    &lt;/ul&gt;\n&quot;
+            with open(file_src, &quot;r&quot;) as f:
+                s = f.read()
+            s = header + s_links + &#x27;    &lt;div class=&quot;pre&quot;&gt;&#x27; + encode(s) + &#x27;&lt;/div&gt;\n&#x27; + footer
+            with open(file_dst, &quot;a&quot;) as f:
+                f.write(s)
+
+        lens = get_lens(root_src)
+        path_index = os.path.join(re.sub(r&quot;^&quot; + root_src, root_dst, dirpath),
+                                  &quot;index.html&quot;)
+        s = &quot;    &lt;h1&gt;&quot; + heading + &quot;&lt;/h1&gt;\n&quot;
+        s += &quot;    &lt;ul&gt;\n&quot;
+        if dirpath != root_src:
+            s += &#x27;      &lt;li&gt;&lt;a href=&quot;../index.html&quot;&gt;..&lt;/a&gt;&lt;/li&gt;\n&#x27;
+        for dirname in dirnames:
+            s_len = &quot;{:,}&quot;.format(lens[os.path.join(dirpath, dirname)])
+            path_relative = os.path.join(dirname, &quot;index.html&quot;)
+            s += &#x27;      &lt;li&gt;&lt;a href=&quot;&#x27; + path_relative + &#x27;&quot;&gt;&#x27; + dirname + &#x27;/&amp;nbsp;&amp;nbsp;(&#x27; + s_len +  &#x27;)&lt;/a&gt;&lt;/li&gt;\n&#x27;
+        for filename in filenames:
+            path_relative = filename + &quot;.html&quot;
+            s_len = &quot;{:,}&quot;.format(lens[os.path.join(dirpath, filename)])
+            s += &#x27;      &lt;li&gt;&lt;a href=&quot;&#x27; + path_relative + &#x27;&quot;&gt;&#x27; + filename + &#x27;&amp;nbsp;&amp;nbsp;(&#x27; + s_len + &#x27;)&lt;/a&gt;&lt;/li&gt;\n&#x27;
+        s += &quot;    &lt;/ul&gt;\n&quot;
+        s = header + s + footer
+        with open(path_index, &quot;a&quot;) as f:
+            f.write(s)
+    print(&quot;Done.&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+  </body>
+</html>
