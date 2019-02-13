@@ -59,9 +59,9 @@ const shuffleArray = a => {
   }
   return a;
 };
-/** 荒く近似された正規乱数を返す。 */
+/** 正規乱数を返す。 */
 const getRandomGauss = () => {
-  const n = 10;
+  const n = 6;
   let sum = 0;
   for (let i = 0; i < n; i++) { sum += Math.random(); }
   return sum / n;
@@ -121,9 +121,9 @@ const palette2 = () => {
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
   const data = imageData.data;
   const getRandomColor = () => {
-    const r = state.color[0] + Math.floor(500 * (getRandomGauss() - 0.5));
-    const g = state.color[1] + Math.floor(500 * (getRandomGauss() - 0.5));
-    const b = state.color[2] + Math.floor(500 * (getRandomGauss() - 0.5));
+    const r = state.color[0] + Math.floor(400 * (getRandomGauss() - 0.5));
+    const g = state.color[1] + Math.floor(400 * (getRandomGauss() - 0.5));
+    const b = state.color[2] + Math.floor(400 * (getRandomGauss() - 0.5));
     return [r, g, b];
   };
   let colors = [];
