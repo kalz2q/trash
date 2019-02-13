@@ -157,6 +157,9 @@ const initCanvas = () => {
   canvas.addEventListener('mouseup', f);
   canvas.addEventListener('touchend', f);
   f = (e) => {
+    log(JSON.stringify(e));
+    log(JSON.stringify(e.target));
+    log(JSON.stringify(e.clientX));
     const rect = e.target.getBoundingClientRect();
     const x = e.clientX - (0 | rect.left);
     const y = e.clientY - (0 | rect.top);
