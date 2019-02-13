@@ -1,0 +1,327 @@
+<DOCTYPE! html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <h1 id="h1" style="font-family: sans-serif;">CanvasPaint</h1> <!-- 見出し -->
+    <div>                                                         <!-- パレット -->
+      <canvas id="palette1" width="400" height="40"></canvas>
+      <input type="button" value="refresh" onclick="palette1();">
+      <canvas id="palette2" width="400" height="40"></canvas>
+      <input type="button" value="refresh" onclick="palette2();">
+    </div>
+    <div>                                                         <!-- ボタンら -->
+      <input type="button" value="toolPen" onclick="state.tool = 'pen';">
+      <input type="button" value="toolBlur" onclick="state.tool = 'blur';">
+      <input type="button" value="size10" onclick="state.radius = 10;">
+      <input type="button" value="size20" onclick="state.radius = 20;">
+      <input type="button" value="size30" onclick="state.radius = 30;">
+      <input type="button" value="size40" onclick="state.radius = 40;">
+      <input type="button" value="size50" onclick="state.radius = 50;">
+      <input type="button" value="rate0.002" onclick="state.rate = 0.002;">
+      <input type="button" value="rate0.02" onclick="state.rate = 0.02;">
+      <input type="button" value="rate0.2" onclick="state.rate = 0.2;">
+      <input type="button" value="rate1" onclick="state.rate = 1;">
+      <input type="button" value="clearWhite" onclick="clearCanvas(255, 255, 255);">
+      <input type="button" value="clearBlack" onclick="clearCanvas(0, 0, 0);">
+      <input type="button" value="resize" onclick="promptResize();">
+    </div>
+    <canvas id="canvas" width="800" height="800" style="border: solid 1px;"></canvas> <!-- キャンバス -->
+    <div style="display: flex;">
+      <textarea id="log" rows="10" style="width: 30%;"></textarea> <!-- ログエリア -->
+      <textarea id="js"  rows="10" style="width: 30%;"></textarea> <!-- JavaScript入力エリア -->
+      <div style="flex: 1; display: flex;">                        <!-- 状態操作エリア -->
+        <textarea id="status" rows="10" style="flex: 1;"></textarea>
+        <div>
+          <input type="button" value="get" onclick="getState();"><br>
+          <input type="button" value="set" onclick="setState();">
+        </div>
+      </div>
+    </div>
+    <div>                                                          <!-- ローカル画像読み込み用UI -->
+      <input type="file" id="file">
+      <input type="button" value="Load" onclick="loadImage();">
+    </div>
+    <script>
+'use strict';
+/** 初期状態 */
+let state = {'color': [255, 0, 0], 'radius': 20, 'rate': 0.02, 'tool': 'pen'};
+/** Fisher-Yates shuffleによって配列の並びをランダムにして返す。 */
+const shuffleArray = a => {
+  let i = a.length, r, swap;
+  while (0 != i) {
+    r = Math.floor(Math.random() * i--);
+    swap = a[i];
+    a[i] = a[r];
+    a[r] = swap;
+  }
+  return a;
+};
+/** 正規乱数を返す。 */
+const getRandomGauss = () => {
+  const n = 6;
+  let sum = 0;
+  for (let i = 0; i < n; i++) { sum += Math.random(); }
+  return sum / n;
+};
+/** 0以上i未満の整数の乱数を返す。 */
+const getRandomInt = i => { return Math.floor(Math.random() * i); };
+/** 見出しを現在の色にする。 */
+const updateHeading = () => {
+  const getHex = i => { return i < 16 ? '0' + i.toString(16) : i.toString(16); };
+  const getHexColor = (r, g, b) => { return '#' + getHex(r) + getHex(g) + getHex(b); };
+  const c = state.color;
+  document.getElementById('h1').style.color = getHexColor(c[0], c[1], c[2]);
+};
+/** パレットにイベントを設定する。 */
+const initPalette = (id) => {
+  const canvas = document.getElementById(id);
+  canvas.addEventListener('mousedown', (e) => {
+    const rect = e.target.getBoundingClientRect();
+    const x = e.clientX - (0 | rect.left);
+    const y = e.clientY - (0 | rect.top);
+    const context = canvas.getContext('2d');
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const i = y * 4 * imageData.width + x * 4;
+    const data = imageData.data;
+    state.color = [data[i + 0], data[i + 1], data[i + 2]];
+    getState();
+    if (id == 'palette1') palette2();
+    e.preventDefault();
+  });
+};
+/** パレット1をリフレッシュする。 */
+const palette1 = () => {
+  const canvas = document.getElementById('palette1');
+  const context = canvas.getContext('2d');
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+  const getRandomColor = () => { return [getRandomInt(256),
+                                         getRandomInt(256),
+                                         getRandomInt(256)]; };
+  let colors = [];
+  for (let i = 0; i < 40; i++) { colors.push(getRandomColor()); };
+  for (let y = 0; y < imageData.height; y++) {
+    for (let x = 0; x < imageData.width; x++) {
+      const i = y * 4 * imageData.width + x * 4;
+      const c = colors[20 * Math.floor(y / 20) + Math.floor(x / 20)];
+      data[i + 0] = c[0];
+      data[i + 1] = c[1];
+      data[i + 2] = c[2];
+      data[i + 3] = 255;
+    }
+  }
+  context.putImageData(imageData, 0, 0);
+};
+/** パレット2をリフレッシュする。 */
+const palette2 = () => {
+  const canvas = document.getElementById('palette2');
+  const context = canvas.getContext('2d');
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+  const getRandomColor = () => {
+    const r = state.color[0] + Math.floor(400 * (getRandomGauss() - 0.5));
+    const g = state.color[1] + Math.floor(400 * (getRandomGauss() - 0.5));
+    const b = state.color[2] + Math.floor(400 * (getRandomGauss() - 0.5));
+    return [r, g, b];
+  };
+  let colors = [];
+  for (let i = 0; i < 40; i++) { colors.push(getRandomColor()); };
+  for (let y = 0; y < imageData.height; y++) {
+    for (let x = 0; x < imageData.width; x++) {
+      const i = y * 4 * imageData.width + x * 4;
+      const c = colors[20 * Math.floor(y / 20) + Math.floor(x / 20)];
+      data[i + 0] = c[0];
+      data[i + 1] = c[1];
+      data[i + 2] = c[2];
+      data[i + 3] = 255;
+    }
+  }
+  context.putImageData(imageData, 0, 0);
+};
+/** キャンバスにイベントを設定する。 */
+const initCanvas = () => {
+  const canvas = document.getElementById('canvas');
+  let f = (e) => {
+    mouse.down = true;
+    e.preventDefault();
+  };
+  canvas.addEventListener('mousedown', f);
+  canvas.addEventListener('touchstart', f);
+  f = (e) => {
+    mouse.down = false;
+    e.preventDefault();
+  };
+  canvas.addEventListener('mouseup', f);
+  canvas.addEventListener('touchend', f);
+  f = (e) => {
+    const rect = e.target.getBoundingClientRect();
+    const x = e.clientX - (0 | rect.left);
+    const y = e.clientY - (0 | rect.top);
+    if (mouse.down) {
+      if (state.tool == 'pen') {
+        drawPen(x, y);
+      } else if (state.tool == 'blur') {
+        drawBlur(x, y);
+      }
+    }
+    // mouse.history.push({'time': window.performance.now(), 'x': x, 'y': y})
+  };
+  canvas.addEventListener('mousemove', f);
+  canvas.addEventListener('touchmove', f);
+};
+/** キャンバスのサイズを変更する。 */
+const promptResize = () => {
+  const canvas = document.getElementById('canvas');
+  canvas.width = window.prompt('width?', canvas.width)
+  canvas.height = window.prompt('height?', canvas.height)
+  init();
+};
+/** キャンバスを色(r, g, b)で塗りつぶす。 */
+const clearCanvas = (r, g, b) => {
+  const canvas = document.getElementById('canvas');
+  const context = canvas.getContext('2d');
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+  for (let y = 0; y < imageData.height; y++) {
+    for (let x = 0; x < imageData.width; x++) {
+      const i = y * 4 * imageData.width + x * 4;
+      data[i + 0] = r;
+      data[i + 1] = g;
+      data[i + 2] = b;
+    }
+  }
+  context.putImageData(imageData, 0, 0);
+};
+/** 虹色のサンプル画像を描画する。 */
+const drawSample = () => {
+  const canvas = document.getElementById('canvas');
+  const context = canvas.getContext('2d');
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+  for (let y = 0; y < imageData.height; y++) {
+    for (let x = 0; x < imageData.width; x++) {
+      const i = y * 4 * imageData.width + x * 4;
+      data[i + 0] = 255 * x / imageData.width;
+      data[i + 1] = 255 * y / imageData.height;
+      data[i + 2] = 255 - Math.max(data[i + 0], data[i + 1]);
+      data[i + 3] = 255;
+    }
+  }
+  context.putImageData(imageData, 0, 0);
+};
+/** ペンツールの描画処理を行う。 */
+const drawPen = (xx, yy) => {
+  const canvas = document.getElementById('canvas');
+  const context = canvas.getContext('2d');
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+  for (let y = yy - state.radius; y < yy + state.radius; y++) {
+    for (let x = xx - state.radius; x < xx + state.radius; x++) {
+      if (Math.random() < state.rate) {
+        const i = y * 4 * imageData.width + x * 4;
+        data[i + 0] = state.color[0];
+        data[i + 1] = state.color[1];
+        data[i + 2] = state.color[2];
+        data[i + 3] = 255;
+      }
+    }
+  }
+  context.putImageData(imageData, 0, 0);
+};
+/** ボカシツールの描画処理を行う。 */
+const drawBlur = (xx, yy) => {
+  const canvas = document.getElementById('canvas');
+  const context = canvas.getContext('2d');
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+  let points = [];  // 処理対象となる点ら。
+  for (let y = yy - state.radius; y < yy + state.radius; y++) {
+    for (let x = xx - state.radius; x < xx + state.radius; x++) {
+      if (Math.random() < state.rate) {
+        points.push([x, y]);
+      }
+    }
+  }
+  points = shuffleArray(points);
+  let pairs = []  // 処理対象となる点の組ら。
+  for (let i = 0; i < points.length - 1; i += 2) {
+    pairs.push([points[i], points[i + 1]]);
+  }
+  for (let i = 0; i < pairs.length; i++) {
+    const p0 = pairs[i][0], p1 = pairs[i][1];
+    const x0 = p0[0], y0 = p0[1], x1 = p1[0], y1 = p1[1];
+    const j0 = y0 * 4 * imageData.width + x0 * 4;
+    const j1 = y1 * 4 * imageData.width + x1 * 4;
+    const r = (data[j0 + 0] + data[j1 + 0]) / 2;  // 2点の中間色を求める。
+    const g = (data[j0 + 1] + data[j1 + 1]) / 2;
+    const b = (data[j0 + 2] + data[j1 + 2]) / 2;
+    data[j0 + 0] = r;
+    data[j0 + 1] = g;
+    data[j0 + 2] = b;
+    data[j1 + 0] = r;
+    data[j1 + 1] = g;
+    data[j1 + 2] = b;
+  }
+  context.putImageData(imageData, 0, 0);
+};
+/** ログを印字する。 */
+const log = s => {
+  const textarea = document.getElementById('log');
+  textarea.textContent = '[' + (new Date()).toLocaleTimeString() + '] ' + s + '\n' + textarea.value;
+};
+/** Shift+Enterでtextareaの内容をevalする。 */
+document.getElementById('js').addEventListener('keypress', e => {
+  if (e.keyCode == 13 && e.shiftKey) {
+    eval(document.getElementById('js').value);
+    e.preventDefault();
+  }
+});
+/** 現在の状態を表示する。 */
+const getState = () => {
+  document.getElementById('status').value = JSON.stringify(state);
+  updateHeading();
+};
+/** 現在の状態を設定する。 */
+const setState = () => {
+  state = JSON.parse(document.getElementById('status').value);
+  updateHeading();
+};
+/** 選択済みの画像ファイルをcanvasに読み込む。 */
+const loadImage = () => {
+  const image = new Image();
+  const input = document.getElementById('file');
+  const reader = new FileReader();
+  reader.onload = updateImage;
+  reader.readAsDataURL(input.files[0]);
+  function updateImage() {
+    image.onload = updateCanvas;
+    image.src = reader.result;
+  }
+  function updateCanvas() {
+    const canvas = document.getElementById('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const context = canvas.getContext('2d');
+    context.drawImage(image, 0, 0);
+    log('幅' + canvas.width + '高さ' + canvas.height + 'の画像を読み込みました。');
+  }
+};
+const mouse = {"down": false, "history": []};
+/** プログラムを初期化する。 */
+const init = () => {
+  initCanvas();
+  initPalette('palette1');
+  initPalette('palette2');
+  palette1();
+  palette2();
+  getState();
+  setState();
+  drawSample();
+};
+init();
+    </script>
+  </body>
+</html>
