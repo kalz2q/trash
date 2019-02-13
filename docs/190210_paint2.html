@@ -28,7 +28,7 @@
       <input type="button" value="clearBlack" onclick="clearCanvas(0, 0, 0);">
       <input type="button" value="resize" onclick="promptResize();">
     </div>
-    <canvas id="canvas" width="800" height="800" style="border: solid 1px;"></canvas> <!-- キャンバス -->
+    <canvas id="canvas" width="400" height="400" style="border: solid 1px;"></canvas> <!-- キャンバス -->
     <div style="display: flex;">
       <textarea id="log" rows="10" style="width: 30%;"></textarea> <!-- ログエリア -->
       <textarea id="js"  rows="10" style="width: 30%;"></textarea> <!-- JavaScript入力エリア -->
@@ -158,11 +158,15 @@ const initCanvas = () => {
   canvas.addEventListener('touchend', f);
   f = (e) => {
     const rect = e.target.getBoundingClientRect();
-    let x = e.clientX - (0 | rect.left);
-    let y = e.clientY - (0 | rect.top);
+    let x, y;
     if (e.touches) {
       x = e.touches[0].clientX - (0 | rect.left);
-      x = e.touches[0].clientY - (0 | rect.top);
+      y = e.touches[0].clientY - (0 | rect.top);
+      log(x + ", " + y);
+    } else {
+      x = e.clientX - (0 | rect.left);
+      y = e.clientY - (0 | rect.top);
+      log(x + ", " + y);
     }
     if (mouse.down) {
       if (state.tool == 'pen') {
