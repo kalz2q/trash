@@ -157,12 +157,13 @@ const initCanvas = () => {
   canvas.addEventListener('mouseup', f);
   canvas.addEventListener('touchend', f);
   f = (e) => {
-    log(JSON.stringify(e));
-    log(JSON.stringify(e.target));
-    log(JSON.stringify(e.clientX));
     const rect = e.target.getBoundingClientRect();
-    const x = e.clientX - (0 | rect.left);
-    const y = e.clientY - (0 | rect.top);
+    let x = e.clientX - (0 | rect.left);
+    let y = e.clientY - (0 | rect.top);
+    if (e.touches) {
+      x = e.touches[0].clientX - (0 | rect.left);
+      x = e.touches[0].clientY - (0 | rect.top);
+    }
     if (mouse.down) {
       if (state.tool == 'pen') {
         drawPen(x, y);
