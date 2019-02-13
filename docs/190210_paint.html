@@ -28,7 +28,7 @@
       <input type="button" value="clearBlack" onclick="clearCanvas(0, 0, 0);">
       <input type="button" value="resize" onclick="promptResize();">
     </div>
-    <canvas id="canvas" width="800" height="800" style="border: solid 1px;"></canvas> <!-- キャンバス -->
+    <canvas id="canvas" width="400" height="400" style="border: solid 1px;"></canvas> <!-- キャンバス -->
     <div style="display: flex;">
       <textarea id="log" rows="10" style="width: 30%;"></textarea> <!-- ログエリア -->
       <textarea id="js"  rows="10" style="width: 30%;"></textarea> <!-- JavaScript入力エリア -->
@@ -89,6 +89,7 @@ const initPalette = (id) => {
     state.color = [data[i + 0], data[i + 1], data[i + 2]];
     getState();
     if (id == 'palette1') palette2();
+    e.preventDefault();
   });
 };
 /** パレット1をリフレッシュする。 */
@@ -143,16 +144,28 @@ const palette2 = () => {
 /** キャンバスにイベントを設定する。 */
 const initCanvas = () => {
   const canvas = document.getElementById('canvas');
-  canvas.addEventListener('mousedown', (e) => {
+  let f = (e) => {
     mouse.down = true;
-  });
-  canvas.addEventListener('mouseup', (e) => {
+    e.preventDefault();
+  };
+  canvas.addEventListener('mousedown', f);
+  canvas.addEventListener('touchstart', f);
+  f = (e) => {
     mouse.down = false;
-  });
-  canvas.addEventListener('mousemove', (e) => {
+    e.preventDefault();
+  };
+  canvas.addEventListener('mouseup', f);
+  canvas.addEventListener('touchend', f);
+  f = (e) => {
     const rect = e.target.getBoundingClientRect();
-    const x = e.clientX - (0 | rect.left);
-    const y = e.clientY - (0 | rect.top);
+    let x, y;
+    if (e.touches) {
+      x = e.touches[0].clientX - (0 | rect.left);
+      y = e.touches[0].clientY - (0 | rect.top);
+    } else {
+      x = e.clientX - (0 | rect.left);
+      y = e.clientY - (0 | rect.top);
+    }
     if (mouse.down) {
       if (state.tool == 'pen') {
         drawPen(x, y);
@@ -161,7 +174,10 @@ const initCanvas = () => {
       }
     }
     // mouse.history.push({'time': window.performance.now(), 'x': x, 'y': y})
-  });
+    e.preventDefault();
+  };
+  canvas.addEventListener('mousemove', f);
+  canvas.addEventListener('touchmove', f);
 };
 /** キャンバスのサイズを変更する。 */
 const promptResize = () => {
