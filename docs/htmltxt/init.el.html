@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/</a> (init.el)</li>
+      <script>up='index.html'</script>
+      <li><a href="190127_htmltxt.py.html">prev: 190127_htmltxt.py</a></li>
+      <script>prev='190127_htmltxt.py.html'</script>
+      <li>(no next)</li>
+    </ul>
+    <div class="pre">;;;; Emacs text editor (since 1976) initialization file.
+;;;; M-r (move-to-window-line)
+
+(setq lexical-binding t) ; Enables lexical binding for this buffer. Not used.
+
+(when (display-graphic-p)               ; X Window Sysmtem mode
+  ;; C-x C-0/C-x C-+/C-x C--: text-scale-adjust/text-scale-increase/text-scale-decrease.
+  (message &quot;(= (display-grahpic-p) t)&quot;)
+  (tool-bar-mode -1)     ; Hides toolbar buttons.
+  (scroll-bar-mode -1)   ; Hides scrollbar. It&#x27;s broken in Ubuntu.
+  (progn                 ; Same binding with gnome-terminal&#x27;s default.
+    (global-set-key (kbd &quot;C-+&quot;) #&#x27;text-scale-increase)  ; or C-x C-+
+    (global-set-key (kbd &quot;C--&quot;) #&#x27;text-scale-decrease)) ; or C-x C--
+  (progn                                                ; Sets fonts.
+    (set-frame-font &quot;Courier 10 Pitch&quot; nil t)
+    (set-fontset-font t
+                      &#x27;japanese-jisx0208 ; JIS X 0208
+                      &quot;TakaoPGothic&quot;))
+  (defun my/alpha (alpha)
+    &quot;Sets transparency to ALPHA.&quot;
+    (interactive &quot;nalpha: &quot;)
+    (set-frame-parameter nil &#x27;alpha alpha))
+  (my/alpha 90)
+  (defun my/line-spacing ()
+    &quot;Toggles line-spacing.&quot;
+    (interactive)
+    (setq-default line-spacing
+                  (if line-spacing nil 0.5)))
+  (defun my/toggle-fullscreen ()
+    &quot;Toggles fullscreen mode.&quot;
+    (interactive)
+    (set-frame-parameter nil &#x27;fullscreen
+                         (if (frame-parameter nil &#x27;fullscreen)
+                             nil &#x27;fullboth)))
+  (global-set-key (kbd &quot;&lt;f11&gt;&quot;) #&#x27;my/toggle-fullscreen)
+  (my/toggle-fullscreen)
+  (add-hook &#x27;emacs-startup-hook
+            (lambda ()
+              ;; (menu-bar-mode 1)         ; Shows menubar.
+              (setq linum-format &quot;%d&quot;))))
+
+;;; Startup messages.
+(progn (message &quot;========== Executing init.el ==========&quot;) ; Prints to *Messages* buffer.
+       (message &quot;(= emacs-version %s)&quot;  ; Prints version number.
+                emacs-version)
+       (defun my/emacs-init-time ()
+         &quot;(emacs-init-time) with argumented precision.&quot;
+         (interactive)
+         (let ((s (format &quot;%.3f seconds&quot;
+                          (float-time (time-subtract after-init-time
+                                                     before-init-time)))))
+           (if (called-interactively-p &#x27;interactive)
+               (message &quot;%s&quot;
+                        s)              ; Prints
+             s)))                       ; Returns a string.
+       (add-hook &#x27;emacs-startup-hook    ; Prints start-up message.
+                 (lambda ()
+                   &quot;Prints greeting.&quot;
+                   (message &quot;Howdy. (= emacs-init-time \&quot;%s\&quot;)&quot;
+                            (my/emacs-init-time))))
+       (progn (when nil                 ; disabled
+                (setq recenter-positions
+                      (cons 0.75    ; Position for recentering by C-l.
+                            (cdr recenter-positions)))
+                (add-hook &#x27;emacs-startup-hook
+                          (lambda ()
+                            &quot;Goes to end-of-buffer.&quot;
+                            (end-of-buffer)
+                            (setq recenter-positions ; Configures temporary
+                                  (cons 0.75
+                                        recenter-positions))
+                            (recenter-top-bottom)
+                            (setq recenter-positions ; Restores the previous setting.
+                                  (cdr recenter-positions))))))
+       (setq inhibit-startup-message
+             t)               ; Suppresses &quot;Welcome to GNU Emacs ...&quot;.
+       (setq initial-scratch-message ; Suppresses &quot;This buffer is for ...&quot;.
+             (current-time-string)))
+
+;;; Files.
+(progn (setq custom-file ; Let Emacs edit custom.el instead of this file.
+             (expand-file-name &quot;custom.el&quot;
+                               user-emacs-directory))
+       (when (file-exists-p custom-file)
+         (load custom-file))
+       (setq make-backup-files
+             nil)          ; Does not make backup files like example~.
+       (setq auto-save-default
+             nil)      ; Does not make auto-save files like #example#.
+       (setq create-lockfiles
+             nil))          ; Does not make lock files like .#example.
+
+;;; Basic settings.
+(progn (setq-default indent-tabs-mode
+                     nil)               ; Uses spaces; not tabs.
+       (global-linum-mode t)            ; Shows line numbers.
+       (setq linum-format
+             &quot;%5d &quot;)                    ; Sets the line number format.
+       (column-number-mode t)           ; Shows column numbers
+       ;; (setq-default word-wrap t)
+       ;; (global-visual-line-mode t)
+       (add-to-list &#x27;global-mode-string ; Number of characters in mode-line.
+                    &#x27;(&quot; %i&quot;))
+       (setq show-paren-delay
+             0)            ; Highlights immediately.
+       (set-face-background &#x27;show-paren-match nil)
+       (set-face-attribute &#x27;show-paren-match nil :underline t)
+       (show-paren-mode t) ; Highlights matching pairs of parentheses.
+       (menu-bar-mode -1)  ; Hides menu bar.
+       (progn (global-set-key (kbd &quot;M-P&quot;)        #&#x27;scroll-down-line)
+              (global-set-key (kbd &quot;M-S-&lt;up&gt;&quot;)   #&#x27;scroll-down-line)
+              (global-set-key (kbd &quot;M-N&quot;)        #&#x27;scroll-up-line)
+              (global-set-key (kbd &quot;M-S-&lt;down&gt;&quot;) #&#x27;scroll-up-line))
+       (setq scroll-preserve-screen-position
+             t)       ; Points same location of screen when scrolling.
+       (setq scroll-error-top-bottom    ; Point can reach top/bottom.
+             t))
+
+;;; Basic hooks.
+(progn
+  (add-hook &#x27;before-save-hook           ; Removes spaces at EOL/EOF.
+            &#x27;delete-trailing-whitespace)
+  (add-hook &#x27;html-mode-hook
+            (lambda ()
+              (electric-indent-mode 0)))
+  ;; Indents Common Lisp if-forms differently from emacs-lisp-mode.
+  (add-hook &#x27;lisp-mode-hook
+            (lambda ()
+              (set (make-local-variable &#x27;lisp-indent-function)
+                   &#x27;common-lisp-indent-function))))
+
+;;; Beep settings.
+(progn (defun my/flash-mode-line ()
+         &quot;Colors mode-line brightly for a moment.&quot;
+         (let ((original-color (face-background &#x27;mode-line))
+               (temporal-color &quot;#ffff00&quot;))
+           (set-face-background &#x27;mode-line
+                                temporal-color)
+           (run-with-idle-timer 0.5
+                                nil
+                                (lambda (x)
+                                  &quot;Restores the original color.&quot;
+                                  (set-face-background &#x27;mode-line
+                                                       x))
+                                original-color)))
+       (setq ring-bell-function
+             #&#x27;my/flash-mode-line)
+       (add-hook &#x27;after-save-hook
+                 #&#x27;my/flash-mode-line))
+
+;; Theme.
+(progn (load-theme &#x27;manoj-dark)
+       (defun my/random-theme ()
+         &quot;Loads a random theme.&quot;
+         (interactive)
+         (let* ((themes &#x27;(adwaita deeper-blue dichromacy light-blue manoj-dark
+                                  misterioso tango tango-dark tsdh-dark
+                                  tsdh-light wheatgrass whiteboard wombat))
+                (length (length themes))
+                (n (random length))     ; random number
+                (theme (nth n           ; random theme
+                            themes)))
+           (message (symbol-name theme))
+           (load-theme theme)))
+       (progn (defun on-after-init ()
+                &quot;Disables the theme backgound color in terminal.&quot;
+                (unless (display-graphic-p (selected-frame))
+                  (set-face-background &#x27;default
+                                       &quot;unspecified-bg&quot;
+                                       (selected-frame))))
+              (add-hook &#x27;window-setup-hook
+                        #&#x27;on-after-init)))
+
+;;; Sphinx documentation generator.
+(progn (defun my/sphinx-make-html ()
+         &quot;Issues &#x27;make html&#x27; on the system to build Sphinx files.&quot;
+         (interactive)
+         (let ((default-directory (locate-dominating-file default-directory &quot;Makefile&quot;)))
+           (if (not default-directory)
+               (message &quot;Makefile not found.&quot;)
+             (save-buffer)
+             (message &quot;make html  at  %s&quot; default-directory)
+             (message &quot;%s&quot; (shell-command-to-string &quot;make html&quot;)))))
+       (global-set-key (kbd &quot;C-q&quot;) nil)
+       (global-set-key (kbd &quot;C-q C-h&quot;) #&#x27;my/sphinx-make-html))
+
+;;; Installs use-package.el.
+(progn (require &#x27;package)               ; package.el is built-in.
+       (setq package-enable-at-startup
+             nil)
+       (add-to-list &#x27;package-archives
+                    &#x27;(&quot;melpa-stable&quot; . &quot;https://stable.melpa.org/packages/&quot;))
+       ;; (add-to-list &#x27;package-archives
+       ;;              &#x27;(&quot;melpa&quot; . &quot;https://melpa.org/packages/&quot;))
+       (setq use-package-always-pin
+             &quot;melpa-stable&quot;)
+       (package-initialize)
+       (unless package-archive-contents
+         (package-refresh-contents))
+       (unless (package-installed-p &#x27;use-package)
+         (package-install &#x27;use-package))
+       (progn
+         (setq use-package-verbose
+               t)
+         (setq use-package-minimum-reported-time
+               0.0001)))
+
+(use-package cider
+  :ensure t
+  :defer t
+  :commands cider
+  :init
+  (message &quot;\tinit cider&quot;)
+  :config
+  (message &quot;\tconf cider&quot;)
+  (setq cider-auto-select-error-buffer t)
+  (setq cider-save-file-on-load t) ; when C-c C-k (cider-load-buffer).
+  (setq cider-show-error-buffer t))
+
+(use-package clojure-mode
+  :ensure t
+  :defer t
+  :init
+  (message &quot;\tinit clojure-mode&quot;)
+  :config
+  (message &quot;\tconf clojure-mode&quot;))
+
+(use-package company
+  :ensure t
+  :commands (cider-mode python-mode)
+  :init
+  (message &quot;\tinit company&quot;)
+  (add-hook &#x27;cider-mode-hook      #&#x27;company-mode)
+  (add-hook &#x27;clojure-mode-hook    #&#x27;company-mode)
+  (add-hook &#x27;emacs-lisp-mode-hook #&#x27;company-mode)
+  (add-hook &#x27;python-mode-hook     #&#x27;company-mode)
+  :config
+  (message &quot;\tconf company&quot;)
+  (progn          ; Disables enter key, and use tab instead.
+    ;; RET is for company-complete-selection at default;
+    (define-key company-active-map (kbd &quot;RET&quot;) nil)
+    (define-key company-active-map (kbd &quot;&lt;return&gt;&quot;) nil) ; for display-graphic-p
+    ;; TAB was company-complete-common, which completes just common part.
+    (define-key company-active-map (kbd &quot;TAB&quot;) #&#x27;company-complete-selection)
+    (define-key company-active-map (kbd &quot;&lt;tab&gt;&quot;) #&#x27;company-complete-selection)
+    (define-key company-active-map (kbd &quot;&lt;up&gt;&quot;) nil)
+    (define-key company-active-map (kbd &quot;&lt;down&gt;&quot;) nil)
+    (define-key company-active-map (kbd &quot;M-n&quot;) #&#x27;company-select-next)
+    (define-key company-active-map (kbd &quot;M-p&quot;) #&#x27;company-select-previous))
+  (progn
+    (set-face-attribute &#x27;company-tooltip nil
+                        :foreground &quot;#777777&quot; :background &quot;#333333&quot;)
+    (set-face-attribute &#x27;company-tooltip-common nil
+                        :foreground &quot;#777777&quot;)
+    (set-face-attribute &#x27;company-tooltip-selection nil
+                        :foreground &quot;#999999&quot; :background &quot;#444444&quot;)
+    (set-face-attribute &#x27;company-tooltip-common-selection nil
+                        :foreground &quot;#999999&quot;)))
+
+(use-package dired                      ; DIRectory EDitor since 1974.
+  :init
+  (message &quot;\tinit dired&quot;)
+  :config
+  (message &quot;\tconf dired&quot;)
+  (put &#x27;dired-find-alternate-file &#x27;disabled nil) ; Suppresses warning.
+  (defun my/nautilus ()
+    (interactive)
+    (call-process &quot;nautilus&quot; nil nil nil
+                  (expand-file-name default-directory))) ; Expands tilde.
+  (define-key dired-mode-map &quot;N&quot; #&#x27;my/nautilus))
+
+(use-package google-translate
+  :ensure t
+  :bind ((&quot;C-q C-q&quot; . google-translate-at-point))
+  :commands google-translate-at-point
+  :init
+  (message &quot;\tinit google-translate&quot;)
+  (setq google-translate-default-source-language &quot;en&quot;)
+  (setq google-translate-default-target-language &quot;ja&quot;)
+  :config
+  (message &quot;\tconf google-translate&quot;))
+
+;; (use-package golden-ratio
+;;   :ensure t
+;;   :init
+;;   (message &quot;\tinit golden-ratio&quot;)
+;;   (golden-ratio-mode 1)
+;;   :config
+;;   (message &quot;\tconf golden-ratio&quot;))
+
+(use-package haskell-mode
+  :ensure t
+  :mode ((&quot;\\.hs\\&#x27;&quot; . haskell-mode))
+  :init
+  (message &quot;\tinit haskell-mode&quot;)
+  :config
+  (message &quot;\tconf haskell-mode&quot;))
+
+(use-package idle-highlight-mode ; Highlights same identifiers in source code.
+  :disabled
+  :ensure t
+  :init
+  (message &quot;\tinit idle-highlight-mode&quot;)
+  (add-hook &#x27;clojure-mode-hook #&#x27;idle-highlight-mode)
+  :config
+  (message &quot;\tconf idle-highlight-mode&quot;))
+
+;; (use-package monokai-theme              ; very slow
+;;   :ensure t)
+
+(use-package paredit
+  :ensure t
+  :commands (lisp-mode)
+  :init
+  (message &quot;\tinit paredit&quot;)
+  (add-hook &#x27;cider-repl-mode-hook                  #&#x27;enable-paredit-mode)
+  (add-hook &#x27;clojure-mode-hook                     #&#x27;enable-paredit-mode)
+  (add-hook &#x27;emacs-lisp-mode-hook                  #&#x27;enable-paredit-mode)
+  (add-hook &#x27;eval-expression-minibuffer-setup-hook #&#x27;enable-paredit-mode)
+  (add-hook &#x27;ielm-mode-hook                        #&#x27;enable-paredit-mode)
+  (add-hook &#x27;lisp-mode-hook                        #&#x27;enable-paredit-mode)
+  (add-hook &#x27;lisp-interaction-mode-hook            #&#x27;enable-paredit-mode)
+  (add-hook &#x27;scheme-mode-hook                      #&#x27;enable-paredit-mode)
+  :config
+  (message &quot;\tconf paredit&quot;)
+  (define-key paredit-mode-map(kbd &quot;C-q )&quot;) ; = C-)
+    #&#x27;paredit-forward-slurp-sexp)
+  (define-key paredit-mode-map (kbd &quot;C-q }&quot;) ; = C-}
+    #&#x27;paredit-forward-barf-sexp)
+  (define-key paredit-mode-map (kbd &quot;C-q (&quot;) ; = C-(
+    #&#x27;paredit-backward-slurp-sexp)
+  (define-key paredit-mode-map (kbd &quot;C-q {&quot;) ; = C-{
+    #&#x27;paredit-backward-barf-sexp)
+  (define-key paredit-mode-map (kbd &quot;C-q M-n&quot;) ; = &lt;M-up&gt;
+    #&#x27;paredit-splice-sexp-killing-forward)
+  (define-key paredit-mode-map (kbd &quot;C-q M-p&quot;) ; = &lt;M-down&gt;
+    #&#x27;paredit-splice-sexp-killing-backward))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :defer t
+  :init
+  (message &quot;\tinit rainbow-delimiters&quot;)
+  (add-hook &#x27;cider-repl-mode-hook #&#x27;rainbow-delimiters-mode)
+  (add-hook &#x27;clojure-mode-hook    #&#x27;rainbow-delimiters-mode)
+  (add-hook &#x27;emacs-lisp-mode-hook #&#x27;rainbow-delimiters-mode)
+  (add-hook &#x27;lisp-mode-hook       #&#x27;rainbow-delimiters-mode)
+  (add-hook &#x27;scheme-mode-hook     #&#x27;rainbow-delimiters-mode)
+  :config
+  (message &quot;\tconf rainbow-delimiters&quot;)
+  (progn
+    (setq rainbow-delimiters-max-face-count 6)
+    (set-face-foreground &#x27;rainbow-delimiters-depth-1-face &quot;#ff6666&quot;)   ; red
+    (set-face-foreground &#x27;rainbow-delimiters-depth-2-face &quot;#66ff66&quot;)   ; green
+    (set-face-foreground &#x27;rainbow-delimiters-depth-3-face &quot;#6666ff&quot;)   ; blue
+    (set-face-foreground &#x27;rainbow-delimiters-depth-4-face &quot;#ffff66&quot;)   ; yellow
+    (set-face-foreground &#x27;rainbow-delimiters-depth-5-face &quot;#66ffff&quot;)   ; cyan
+    (set-face-foreground &#x27;rainbow-delimiters-depth-6-face &quot;#ff66ff&quot;))) ; magenta
+
+(use-package rst                        ; reStructuredText
+  :ensure t
+  :defer t
+  :commands rst-mode
+  :init
+  (message &quot;\tinit rst&quot;)
+  :config
+  (message &quot;\tconf rst&quot;)
+  (setq frame-background-mode &#x27;dark) ; Uses the color palette for dark background.
+  (define-key rst-mode-map (kbd &quot;&lt;M-RET&gt;&quot;) #&#x27;rst-insert-list)) ; Appends a list item.
+
+(use-package saveplace      ; Remembers cursor position for each file.
+  :config
+  (save-place-mode 1)
+  (setq save-place-file
+        (concat user-emacs-directory
+                &quot;saveplace&quot;)))
+
+;; C-x C-e: scheme-send-last-sexp in cmuscheme.el (under run-scheme).
+(use-package scheme
+  :ensure t
+  :commands (scheme-mode run-scheme)
+  :init
+  (message &quot;\tinit scheme&quot;)
+  :config
+  (message &quot;\tconf scheme&quot;)
+  (setq process-coding-system-alist
+        (cons &#x27;(&quot;gosh&quot; utf-8 . utf-8) process-coding-system-alist))
+  (setq scheme-program-name &quot;gosh -i&quot;)
+  (defun scheme-other-window ()
+    &quot;Run Gauche on other window&quot;
+    (interactive)
+    (let ((buf-name (buffer-name (current-buffer))))
+      (scheme-mode)
+      (switch-to-buffer-other-window
+       (get-buffer-create &quot;*scheme*&quot;))
+      (run-scheme scheme-program-name)
+      (switch-to-buffer-other-window
+       (get-buffer-create buf-name))))
+  (define-key scheme-mode-map (kbd &quot;C-c s&quot;) &#x27;scheme-other-window))
+
+(use-package slime
+  :ensure t
+  :defer t
+  :commands slime
+  :init
+  (message &quot;\tinit slime&quot;)
+  :config
+  (message &quot;\tconf slime&quot;)
+  (use-package slime-company
+    :ensure t
+    :commands slime-company)
+  (setq inferior-lisp-program (executable-find &quot;sbcl&quot;))
+  (slime-setup &#x27;(slime-company)))
+
+;;(use-package smart-mode-line)           ; too slow
+
+(use-package total-lines            ; Provides a variable total-lines.
+  :ensure t
+  :init
+  (message &quot;\tinit total-lines&quot;)
+  :config
+  (message &quot;\tconf total-lines&quot;)
+  (global-total-lines-mode)        ; Now total-lines is available.
+  (setq-default mode-line-position ; Not sophisticated but simple solution.
+                (append mode-line-position
+                        &#x27;((:eval (format &quot;/%d&quot;
+                                         total-lines)))))) ; only usage
+
+(use-package xclip
+  :ensure t
+  :if (executable-find &quot;xclip&quot;)
+  :init
+  (message &quot;\tinit xclip&quot;)
+  :config
+  (message &quot;\tconf xclip&quot;)
+  (xclip-mode 1))
+
+;; (use-package zenburn-theme
+;;   :ensure t)
+
+
+
+
+;;; not for emacs
+(defun my/string-from-file (path)
+  &quot;Reads a file PATH and returns the data as a string.&quot;
+  (with-temp-buffer
+    (insert-file-contents path)
+    (buffer-string)))
+(defun my/append-to-file (path string)
+  &quot;Appends STRING to a file PATH.&quot;
+  (append-to-file string nil path))
+(defun my/write-to-file (path string)
+  &quot;Writes STRING to a file PATH.&quot;
+    (with-temp-file path
+    (insert string)))
+(defun my/initialize-system ()
+  &quot;Initializes user configuration files.&quot;
+  (interactive)
+  (message &quot;my/init&quot;)
+  (if (file-exists-p &quot;~/.bashrc&quot;)       ; Appends if necessary.
+      (let* ((s                         ; file data
+              (my/string-from-file &quot;~/.bashrc&quot;))
+             (contains                  ; if already configured
+              (string-match-p (regexp-quote &quot;bashrc_my&quot;)
+                              s)))
+        (if contains
+            (message &quot;The string already exists.&quot;)
+          (progn
+            (message &quot;Appending the string.&quot;)
+            (my/append-to-file &quot;~/.bashrc&quot;
+                               &quot;\n. ~/.bashrc_my\n&quot;))))
+    (message &quot;~/.bashrc not exist.&quot;))
+  (my/write-to-file &quot;~/.bashrc_my&quot; my/.bashrc_my) ; Inits file.
+  (message &quot;Done.&quot;))
+
+;;; bashrc ...
+(setq my/.bashrc_my &quot;# This file is &#x27;~/.bashrc_my&#x27;
+#
+# Usage:
+# echo &#x27;. ~/.bashrc_my&#x27; &gt;&gt; ~/.bashrc
+
+# emacs --no-window-system
+alias e=&#x27;emacs -nw&#x27;
+
+# syntax highlighting
+alias c=&#x27;pygmentize -O style=monokai -f console256 -g&#x27;
+
+# Goes up multiple directory levels at once.
+alias ..=&#x27;cd ..&#x27;
+alias ...=&#x27;cd ../..&#x27;
+alias ....=&#x27;cd ../../..&#x27;
+alias .....=&#x27;cd ../../../..&#x27;
+alias ......=&#x27;cd ../../../../..&#x27;
+alias .......=&#x27;cd ../../../../../..&#x27;
+alias ........=&#x27;cd ../../../../../../..&#x27;
+alias .........=&#x27;cd ../../../../../../../..&#x27;
+alias ..........=&#x27;cd ../../../../../../../../../&#x27;
+&quot;)
+
+(quote
+ (my/apt
+  sudo apt install clisp                ; # GNU Common Lisp programming language
+  sudo apt install clojure              ; # Clojure programming language
+  sudo apt install default-jdk          ; # Java Development Kit
+  sudo apt install dvipng               ; # DVI to PNG translation tool
+  sudo apt install emacs                ; # Emacs text editor
+  ;; sudo apt install fonts-takao          ; # Takao family Japanese fonts
+  sudo apt install gimp                 ; # GIMP graphics editor
+  sudo apt install git                  ; # Git version-control system
+  sudo apt install gitk                 ; # Git GUI tool
+  sudo apt install gnome-tweaks         ; # configuration utility
+  sudo apt install haskell-platform     ; # Haskell programming language
+  sudo apt install ibus-mozc            ; # Japanese input method by Google
+  sudo apt install leiningen            ; # Clojure bulid tool
+  sudo apt install libgtk-3-dev         ; # development files for the GTK+ library
+  sudo apt install mongodb              ; # MongoDB NoSQL database
+  sudo apt install ncdu                 ; # disk usage utility using ncurses CUI
+  sudo apt install pdfmod               ; # GUI PDF editor
+  sudo apt install python-pygments      ; # syntax coloring tool
+  sudo apt install python3-sphinx       ; # Sphinx documentation tool
+  sudo apt install ruby                 ; # Ruby programming language
+  sudo apt install sagemath             ; # SageMath algebra system
+  sudo apt install sbcl                 ; # Steel Bank Common Lisp programming language
+  sudo apt install trash-cli            ; # trash command
+  sudo apt install tree                 ; # lists directories
+  sudo apt install xclip                ; # CUI-clipboard interaction
+  ))
+
+(quote
+ (setq
+  (Firefox
+   (browser.urlbar.autocomplete.enabled) nil)
+  (LibreOffice
+   (Language Settings
+             (Languages
+              (Asian) Japanese)))
+  (Ubuntu
+   (gnome-terminal
+    (Show menubar by default in new terminals) nil
+    (Text
+     (Terminal bell) nil))
+   (gnome-tweaks
+    (Desktop
+     (Trash) nil)
+    (Keyboard and Mouse
+              (Additional Layout Options
+                          (Ctrl position
+                                (Caps Lock as Ctrl) t))
+              ;; (Emacs Input) t ; annoying
+              )
+    (Top Bar
+         (Date) t
+         (Seconds) t))
+   (Nautilus
+    (Preference
+     (Behavior
+      (Executable Text Files
+                  (Ask what to do) t)))))))
+</div>
+  </body>
+</html>

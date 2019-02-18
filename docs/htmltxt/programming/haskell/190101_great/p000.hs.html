@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/haskell/190101_great/</a> (p000.hs)</li>
+      <script>up='index.html'</script>
+      <li>(no prev)</li>
+      <li>(no next)</li>
+    </ul>
+    <div class="pre">main :: IO()
+main = do
+  putStrLn &quot;hello, world&quot;
+  putStrLn &quot;計算する。&quot;
+  print $ 2 + 15
+  print $ 49 * 100
+  print $ 1892 - 1472
+  print $ 5 / 2
+  putStrLn &quot;演算子の優先順位。&quot;
+  print $ (50 * 100) - 4999
+  print $ 50 * 100 - 4999
+  print $ 50 * (100 - 4999)
+  print $ 5 * (-3)--単項マイナス演算子は常に括弧を要する
+  putStrLn &quot;論理演算&quot;
+  print $ True &amp;&amp; False
+  print $ True &amp;&amp; True
+  print $ False || True
+  print $ not False
+  print $ not (True &amp;&amp; True)
+  putStrLn &quot;等価&quot;
+  print $ 5 == 5
+  print $ 1 == 0
+  print $ 5 /= 5
+  print $ 5 /= 4
+  print $ &quot;hello&quot; == &quot;hello&quot;
+</div>
+  </body>
+</html>

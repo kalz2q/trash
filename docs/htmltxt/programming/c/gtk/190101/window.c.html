@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/gtk/190101/</a> (window.c)</li>
+      <script>up='index.html'</script>
+      <li><a href="helloworld.c.html">prev: helloworld.c</a></li>
+      <script>prev='helloworld.c.html'</script>
+      <li>(no next)</li>
+    </ul>
+    <div class="pre">// http://uchigo.main.jp/gtk3/chap02/chap02.html
+// 素人の独学GTK+3.0 - ウィンドウ表示
+// gcc window.c $(pkg-config --cflags --libs gtk+-3.0)
+
+#include &lt;gtk/gtk.h&gt;
+
+int main(int argc, char **argv) {
+  GtkWidget *w;  // window
+  gtk_init(&amp;argc, &amp;argv);
+  w = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_widget_set_size_request(w, 300, 200);
+  g_signal_connect(w, &quot;destroy&quot;, G_CALLBACK(gtk_main_quit), NULL);
+  gtk_widget_show(w);
+  gtk_main();
+}
+</div>
+  </body>
+</html>
