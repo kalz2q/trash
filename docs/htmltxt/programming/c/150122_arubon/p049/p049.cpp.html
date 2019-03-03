@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/150122_arubon/p049/</a> (p049.cpp)</li>
+      <script>up='index.html'</script>
+      <li><a href="note.txt.html">prev: note.txt</a></li>
+      <script>prev='note.txt.html'</script>
+      <li>(no next)</li>
+    </ul>
+    <div class="pre">#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+using namespace std;
+static const int MAX = 200000;  // 200,000
+
+int main() {
+  int R[MAX];
+  int n;
+
+  cin &gt;&gt; n;
+  for (int i = 0; i &lt; n; i++) {
+    cin &gt;&gt; R[i];
+  }
+  int maxv = -2000000000;  // max value. 最大の儲け。-2,000,000,000
+  int minv = R[0];         // iより前での最小値。
+  for (int i = 1; i &lt; n; i++) {
+    maxv = max(maxv,
+               R[i] - minv);
+    minv = min(minv, R[i]);
+  }
+  cout &lt;&lt; maxv &lt;&lt; endl;
+  return 0;
+}
+</div>
+  </body>
+</html>

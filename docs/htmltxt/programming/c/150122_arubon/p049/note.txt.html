@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/c/150122_arubon/p049/</a> (note.txt)</li>
+      <script>up='index.html'</script>
+      <li><a href="in2.html">prev: in2</a></li>
+      <script>prev='in2.html'</script>
+      <li><a href="p049.cpp.html">next: p049.cpp</a></li>
+      <script>next='p049.cpp.html'</script>
+    </ul>
+    <div class="pre">　n個をそれぞれを「時刻」と呼ぶことにする。
+　R_j - R_iを「儲け」と呼ぶことにする。
+　儲けは、組(i, j)により一意に定まる。
+　全ての組について儲けを得れば、最大の儲けは分かる。しかしテキストにあるようにO(n^2)となる。
+
+　任意のjを固定した時に、R_jに対応する最良のR_iは、i &lt; jで最小のR_iである。
+　最小のR_iのiは、選択しうるiの範囲が右に広がった時、移動するならより右にしか移動しない。
+
+　よって、あるjを考える時にそれに対応して考えるべきiを求めるために、j - 1の時の情報を活かすことができる。
+　つまり、あるjを考える時にそれに対応して考えるべきiは、j - 1の時のiよりも左側にはない。
+　なおかつ、iより大きくj - 1より小さい範囲にもないと考えることができる。すなわち、iを更新するならば必要だとしてもj - 1に更新すればよい。
+</div>
+  </body>
+</html>
