@@ -1,0 +1,3 @@
+https://www.sejuku.net/blog/25002
+【C言語入門】mallocの使い方(memset, memcpy, free, memcmp)
+長野透
