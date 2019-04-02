@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/python3/</a> (190304_reverse_lines.py)</li>
+      <script>up='index.html'</script>
+      <li><a href="190303_reverse_lines.py.html">prev: 190303_reverse_lines.py</a></li>
+      <script>prev='190303_reverse_lines.py.html'</script>
+      <li><a href="190305_reverse_lines.py.html">next: 190305_reverse_lines.py</a></li>
+      <script>next='190305_reverse_lines.py.html'</script>
+    </ul>
+    <div class="pre">import os
+import sys
+
+def reverse_file(path):
+    assert os.path.exists(path)
+    assert os.path.isfile(path)
+    abspath = os.path.abspath(path)
+    print(abspath)
+    with open(abspath) as f:
+        ss_old = f.readlines()
+    ss_new = reverse_lines(ss_old)
+    with open(abspath, &quot;w&quot;) as f:
+        f.writelines(ss_new)
+
+def reverse_lines(ss):
+    return reversed(ss)
+
+if __name__ == &quot;__main__&quot;:
+    assert len(sys.argv) == 2
+    reverse_file(sys.argv[1])
+</div>
+  </body>
+</html>

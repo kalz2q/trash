@@ -1,6 +1,10 @@
 ;;;; Emacs text editor (since 1976) initialization file.
 ;;;; M-r (move-to-window-line)
 
+(add-hook 'python-mode-hook
+          '(lambda ()
+             (setq python-indent 2)))
+
 (setq lexical-binding t) ; Enables lexical binding for this buffer. Not used.
 
 (when (display-graphic-p)               ; X Window Sysmtem mode
@@ -93,6 +97,8 @@
 ;;; Basic settings.
 (progn (setq-default indent-tabs-mode
                      nil)               ; Uses spaces; not tabs.
+       (setq-default tab-width
+                     2)
        (global-linum-mode t)            ; Shows line numbers.
        (setq linum-format
              "%5d ")                    ; Sets the line number format.
@@ -516,6 +522,7 @@ alias ..........='cd ../../../../../../../../../'
   sudo apt install libgtk-3-dev         ; # development files for the GTK+ library
   sudo apt install mongodb              ; # MongoDB NoSQL database
   sudo apt install ncdu                 ; # disk usage utility using ncurses CUI
+  sudo apt install open-cobol           ; # a.k.a. GnuCOBOL; a COBOL implementation
   sudo apt install pdfmod               ; # GUI PDF editor
   sudo apt install python-pygments      ; # syntax coloring tool
   sudo apt install python3-sphinx       ; # Sphinx documentation tool
