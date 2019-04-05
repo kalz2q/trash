@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    font-family: monospace;
+}
+.pre {
+    white-space: pre-wrap;
+}
+    </style>
+    <script>
+up = false;
+prev = false;
+next = false;
+window.document.onkeydown = function(e) {
+    if (e.key == 'Backspace')
+        history.back();
+    if (e.key == 'i')
+        if (up)
+            window.location.href = up;
+    if (e.key == 'ArrowLeft')
+        if (prev)
+            window.location.href = prev;
+    if (e.key == 'ArrowRight')
+        if (next)
+            window.location.href = next;
+};
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="index.html">/programming/cpp/</a> (190101_note.txt)</li>
+      <script>up='index.html'</script>
+      <li>(no prev)</li>
+      <li>(no next)</li>
+    </ul>
+    <div class="pre">C++について
+
+　C++の標準としては、C++98、C++03、C++11、C++14、C++17、C++20 がある。なお、C++0xと呼ばれるものがあるが、今で言うC++11のことである。
+　それぞれのISO標準の内容は無償公開されていない。そこでむしろ草稿が流通している。よほど厳密な議論をするのでなければ草稿で足りると考えるべきだろう。
+　https://softwareengineering.stackexchange.com/questions/326249/why-isnt-the-c-standard-free
+
+【main関数のreturn 0;を省略できるか？】
+　C++98以降でできる。
+　C++98/11/14 3.6.1.5「If control reaches the end of main without encountering a return statement, the effect is that of executing return 0;」
+　C++17 6.6.1.5「If control flows off the end of the compound-statement of main, the effect is equivalent to a return with operand 0 (see also 18.3).」
+　https://stackoverflow.com/questions/276807/return-0-implicit
+　https://stackoverflow.com/questions/4189885/why-is-explicitly-returning-0-from-main-considered-good-practice
+　なお、C言語ではC99以降で省略できる。
+
+【ヘッダの.h】
+　例えば#include &lt;cmath&gt;とすることと#include &lt;math.h&gt;とすることはほとんど同じ意味だ。C++98以降では前者が推奨されたがC++11以降では後者を推奨する向きもある。
+　なお、#include &lt;string&gt;と#include &lt;string.h&gt;は異なる意味だ。前者はC++のstring型についての標準ライブラリであり、後者はCのナル文字による文字列表現についての標準ライブラリである。C++の標準ライブラリには拡張子が付いていない。
+　C++98以降でcmath形式が推奨されたのは、そこではstd名前空間の中のみ汚染し、math.hではcmathをincludeしてstd名前空間の外に出すという構造を目指したからであったらしい。しかしcmath形式のヘッダらがグローバル名前空間を汚さない時代は実際には来なかった。よって、C++11以降では、cmath形式のヘッダがグローバル名前空間を汚さないという定義は廃止された。また、その「理想」を実現するためには、Cのヘッダを全てC++用に再実装しなければならず現実的でないとする意見もある、が事実かわからない。
+　C++11以降ではmath.h形式を用いるべきだとする論拠はこうだ。すなわち、余計なことをするとヘッダのバージョンによって名前衝突するリスクが増すだけだということらしい。
+　個人的には、標準ライブラリには拡張子がないということをCのライブラリまで演繹して、しかし頭のcで区別するcmath形式は感じがよい気がする。また、グローバル名前空間を汚さないという当初の意図は一応の合理性があるように思える。cmath形式でincludeした方が実際にグローバル名前空間の汚染が若干少ない場合はあるのではなかろうか。なのでひどい短所が理解できるまではcmath形式を使っておけばいいかなという認識である。
+　https://stackoverflow.com/questions/2118422/scope-of-c-libraries-in-c-x-h-vs-cx
+　https://stackoverflow.com/questions/2587445/are-c-functions-declared-in-c-headers-guaranteed-to-be-in-the-global-names
+　https://stackoverflow.com/questions/10694255/c-cmath-vs-math-h-and-similar-c-prefixed-vs-h-extension-headers
+　https://stackoverflow.com/questions/10625716/in-what-cases-we-need-to-include-cassert
+　https://stackoverflow.com/questions/2799682/c-includes-with-and-without-h
+
+【digit separator】
+　なるものによりC++14では1&#x27;000&#x27;000などと書ける。
+　逆に言えば、C++14より前では書けない。1000*1000などと書く向きもある。
+　emacsで着色が崩れるようだ。modern-cpp-font-lockなるモジュールがあるが、これには有効でないようだ。
+　https://stackoverflow.com/questions/50559636/is-there-a-way-to-write-a-large-number-in-c-source-code-with-spaces-to-make-it
+　https://stackoverflow.com/questions/27767781/why-was-the-space-character-not-chosen-for-c14-digit-separators
+　https://stackoverflow.com/questions/40633059/why-write-1-000-000-000-as-100010001000-in-c
+　https://en.wikipedia.org/wiki/Integer_literal#Digit_separators
+
+【auto型】
+　はC++11から使える。
+</div>
+  </body>
+</html>
